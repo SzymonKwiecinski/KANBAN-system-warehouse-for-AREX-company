@@ -5,6 +5,7 @@ from datetime import date
 import shutil
 import os
 from os.path import join
+import path as my_p
 
 test_sch = '0010;20-3060500;100\n'
 
