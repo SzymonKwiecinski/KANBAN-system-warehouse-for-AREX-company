@@ -77,15 +77,9 @@ def send_to_office():
     global is_okej
     if is_okej[1] == True and is_okej[0] == True:
         path = os.path.abspath(name)
-
-        path2 = path.split('\\')
-        del path2[-2]
-        # path2[-2] = 'Folder udostępniony BIURO'
-        path2 = '\\'.join(path2)
-        print(path2)
         # path2 =r'\\DESKTOP-70MER87\Users\arex-\Desktop\Folder udostępniony BIURO'
         try:
-            shutil.move(path,path2)
+            shutil.move(path,my_p.office)
             my_button_to_office.configure(bg='green')
         except:
             label_error.configure(text='plik o tej nazwie już istnieje')
