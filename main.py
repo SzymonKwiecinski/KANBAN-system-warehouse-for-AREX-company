@@ -6,8 +6,12 @@ import shutil
 import os
 from os.path import join
 import path as my_p
+import socket
+import pickle
+import IP4_adress
 
 test_sch = '0010;20-3060500;100\n'
+
 
 now_data = str(date.today())
 root = tk.Tk()
@@ -73,17 +77,55 @@ def write_to_exel():
         my_button_to_exel.configure(bg='green')
         is_okej[1]=True
 
+# def send_to_office():
+#     global is_okej
+#     if is_okej[1] == True and is_okej[0] == True:
+#         path = os.path.abspath(name)
+#         # path2 =r'\\DESKTOP-70MER87\Users\arex-\Desktop\Folder udostępniony BIURO'
+#         try:
+#             shutil.move(path,my_p.office)
+#             my_button_to_office.configure(bg='green')
+#         except:
+#             label_error.configure(text='plik o tej nazwie już istnieje')
+#             my_button_to_office.configure(bg='red')
+
+
+
 def send_to_office():
     global is_okej
     if is_okej[1] == True and is_okej[0] == True:
-        path = os.path.abspath(name)
-        # path2 =r'\\DESKTOP-70MER87\Users\arex-\Desktop\Folder udostępniony BIURO'
-        try:
-            shutil.move(path,my_p.office)
-            my_button_to_office.configure(bg='green')
-        except:
-            label_error.configure(text='plik o tej nazwie już istnieje')
-            my_button_to_office.configure(bg='red')
+        HEADER = 64
+        PORT = 5050
+        SERVER = socket.gethostbyname(socket.gethostname())
+        ADDR = (SERVER, PORT)
+        FORMAT = 'utf-8'
+        DISCONNECT_MESSAGE = "DISCONECT"
+
+        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client.connect(ADDR)
+
+        def send_df_to_office_via_pickle(msg):
+            message = msg
+            msg_lenght = len(message)
+            send_lenght = str(msg_lenght).encode(FORMAT)
+            send_lenght += b' ' * (HEADER - len(send_lenght))
+            client.send(send_lenght)
+            client.send(message)
+            print(client.recv(2048).decode(FORMAT))
+
+        msg_df = pickle.dumps(df)
+        send_df_to_office_via_pickle(msg_df)
+
+
+        # path = os.path.abspath(name)
+        # # path2 =r'\\DESKTOP-70MER87\Users\arex-\Desktop\Folder udostępniony BIURO'
+        # try:
+        #     shutil.move(path,my_p.office)
+        #     my_button_to_office.configure(bg='green')
+        # except:
+        #     label_error.configure(text='plik o tej nazwie już istnieje')
+        #     my_button_to_office.configure(bg='red')
+
 
 # C:\Users\kwiec\PycharmProjects\Test_zczytywania_scanera\2020-11-06-KANBAN.xlsx
 
